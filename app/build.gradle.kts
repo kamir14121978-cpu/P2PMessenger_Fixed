@@ -12,8 +12,8 @@ android {
         applicationId = "kz.p2pmessenger"
         minSdk = 29
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.2"
+        versionCode = 3
+        versionName = "0.3"
     }
 
     compileOptions {
@@ -31,6 +31,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("io.github.webrtc-sdk:android:150.7871.01")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
     testImplementation("junit:junit:4.13.2")
 }

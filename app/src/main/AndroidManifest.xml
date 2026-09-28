@@ -1,7 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
     <application android:name=".MessengerApplication" android:theme="@style/AppTheme" android:label="P2P Messenger" android:usesCleartextTraffic="true">
+        <activity android:name=".internet.QrCaptureActivity" android:exported="false"
+            android:theme="@style/zxing_CaptureTheme"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

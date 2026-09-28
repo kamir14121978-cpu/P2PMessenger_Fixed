@@ -11,8 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import kz.p2pmessenger.internet.InternetScreen
+import kz.p2pmessenger.internet.InternetViewModel
 
 class MainActivity : ComponentActivity() {
+    private val internet by lazy { ViewModelProvider(this)[InternetViewModel::class.java] }
     private val messenger get() = (application as MessengerApplication).messenger
     private var nsd: NsdDiscovery? = null
     private val peers = mutableStateListOf<Peer>()
@@ -40,6 +44,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            var internetMode by rememberSaveable { mutableStateOf(false) }
             var host by rememberSaveable { mutableStateOf("") }
             var selectedName by rememberSaveable { mutableStateOf<String?>(null) }
             var text by rememberSaveable { mutableStateOf("") }
@@ -53,14 +58,23 @@ class MainActivity : ComponentActivity() {
             }
             MaterialTheme {
                 Column(Modifier.fillMaxSize().safeDrawingPadding().imePadding().padding(16.dp)) {
-                    Text("P2P Messenger 0.2", style = MaterialTheme.typography.headlineSmall)
+                    Text("P2P Messenger 0.3", style = MaterialTheme.typography.headlineSmall)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FilterChip(selected = !internetMode, onClick = { internetMode = false },
+                            label = { Text("Локальная сеть") })
+                        FilterChip(selected = internetMode, onClick = { internetMode = true },
+                            label = { Text("Интернет") })
+                    }
+                    if (internetMode) {
+                        InternetScreen(internet, Modifier.weight(1f))
+                    } else {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("Устройства в сети", Modifier.weight(1f).padding(top = 12.dp))
                         TextButton(onClick = { startDiscovery() }) { Text("Обновить") }
                     }
                     Text(discoveryStatus, style = MaterialTheme.typography.bodySmall)
                     if (peers.isEmpty()) {
-                        Text("Пока никого нет. Откройте P2PMessenger 0.2 на втором телефоне в той же Wi-Fi сети.",
+                        Text("Пока никого нет. Откройте P2PMessenger 0.2 или новее на втором телефоне в той же Wi-Fi сети.",
                             Modifier.padding(vertical = 8.dp), style = MaterialTheme.typography.bodySmall)
                     } else {
                         LazyColumn(Modifier.fillMaxWidth().heightIn(max = 160.dp)) {
@@ -98,6 +112,7 @@ class MainActivity : ComponentActivity() {
                                 text = ""
                             }
                         }) { Text("Отправить") }
+                    }
                     }
                 }
             }
